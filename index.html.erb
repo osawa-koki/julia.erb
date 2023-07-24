@@ -7,10 +7,29 @@
 </head>
 <body>
   <div style="display: grid; grid-template-columns: repeat(<%= width %>, 1px); grid-template-rows: repeat(<%= height %>, 1px);">
+
     <% (0...height).each do |y| %>
       <% (0...width).each do |x| %>
+
         <% zx = x_min + (x_max - x_min) * x / width %>
-        
+        <% zy = y_min + (y_max - y_min) * y / height %>
+
+        <% z = Complex(zx, zy) %>
+        <% c = Complex(cx, cy) %>
+        <% iteration = 0 %>
+        <% while z.abs < 2 && iteration < max_iterations %>
+          <% z = z * z + c %>
+          <% iteration += 1 %>
+        <% end %>
+
+        <% if iteration == max_iterations %>
+          <% color = [255, 255, 255] %>
+        <% else %>
+          <% r = (255 - iteration * incremental_step) % 255 %>
+          <% g = (iteration * incremental_step) % 255 %>
+          <% b = (iteration * incremental_step) % 255 %>
+          <% color = [r, g, b] %>
+        <% end %>
         <div style="background-color: rgb(<%= color.join(',') %>);"></div>
       <% end %>
     <% end %>
